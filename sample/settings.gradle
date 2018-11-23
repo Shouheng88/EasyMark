@@ -1,0 +1,2 @@
+include ':app', ':easymark'
+project(':easymark').projectDir = new File('../easymark')
