@@ -1,4 +1,4 @@
-package me.urakalee.markdown
+package me.shouheng.easymark.editor.dayone
 
 /**
  * @author Uraka.Lee

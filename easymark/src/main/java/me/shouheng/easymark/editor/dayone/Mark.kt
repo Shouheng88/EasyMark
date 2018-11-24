@@ -1,6 +1,6 @@
-package me.urakalee.markdown
+package me.shouheng.easymark.editor.dayone
 
-import me.urakalee.markdown.handler.*
+import me.shouheng.easymark.editor.dayone.handler.*
 
 /**
  * @author Uraka.Lee
@@ -24,7 +24,7 @@ enum class Mark(val pattern: Regex, val defaultMark: String, val handler: MarkHa
         }
 
         fun handle(inputMark: Mark, source: String): String {
-            return Mark.fromString(source).let {
+            return fromString(source).let {
                 it.handler.handleMark(inputMark, source, it)
             }
         }

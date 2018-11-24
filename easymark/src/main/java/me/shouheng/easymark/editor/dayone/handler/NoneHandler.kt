@@ -1,7 +1,7 @@
-package me.urakalee.markdown.handler
+package me.shouheng.easymark.editor.dayone.handler
 
-import me.urakalee.markdown.Mark
-import me.urakalee.markdown.MarkHandler
+import me.shouheng.easymark.editor.dayone.Mark
+import me.shouheng.easymark.editor.dayone.MarkHandler
 
 /**
  * empty 在文字顶头时会出现, 需要多加一个空格

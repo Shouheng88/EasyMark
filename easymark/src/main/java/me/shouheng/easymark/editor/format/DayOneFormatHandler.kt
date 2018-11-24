@@ -2,11 +2,11 @@ package me.shouheng.easymark.editor.format
 
 import android.widget.EditText
 import me.shouheng.easymark.editor.Format
-import me.urakalee.markdown.Indent
-import me.urakalee.markdown.Mark
-import me.urakalee.markdown.handler.TodoHandler
-import me.urakalee.ranger.extension.isIndent
-import me.urakalee.ranger.extension.selectedLine
+import me.shouheng.easymark.editor.dayone.Indent
+import me.shouheng.easymark.editor.dayone.Mark
+import me.shouheng.easymark.editor.dayone.handler.TodoHandler
+import me.shouheng.easymark.editor.dayone.extension.isIndent
+import me.shouheng.easymark.editor.dayone.extension.selectedLine
 
 /**
  * This code is cloned from MarkNote, and originally contributed by Uraka.Lee

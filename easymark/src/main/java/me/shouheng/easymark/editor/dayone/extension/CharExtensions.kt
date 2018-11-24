@@ -1,4 +1,4 @@
-package me.urakalee.ranger.extension
+package me.shouheng.easymark.editor.dayone.extension
 
 /**
  * @author Uraka.Lee
