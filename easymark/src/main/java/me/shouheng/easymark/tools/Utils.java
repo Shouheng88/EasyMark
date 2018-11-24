@@ -40,8 +40,8 @@ public class Utils {
     public static String getStartSpace(String target) {
         StringBuilder sb = new StringBuilder();
         char[] chars = target.toCharArray();
-        for (char aChar : chars) {
-            if (aChar == CHAR_SPACE) {
+        for (char c : chars) {
+            if (c == CHAR_SPACE) {
                 sb.append(CHAR_SPACE);
             } else {
                 break;
@@ -86,7 +86,7 @@ public class Utils {
     public static boolean isSingleLine(String source, int selectionStart) {
         if (source.isEmpty()) return true;
         source = source.substring(0, selectionStart);
-        return source.length() == 0 || source.charAt(source.length() - 1) == '\n';
+        return source.length() == 0 || source.charAt(source.length() - 1) == Constants.CHAR_ENTER;
     }
 
     /**
@@ -99,8 +99,8 @@ public class Utils {
     public static boolean isTwoSingleLines(String source, int selectionStart) {
         source = source.substring(0, selectionStart);
         return source.length() >= 2
-                && source.charAt(source.length() - 1) == '\n'
-                && source.charAt(source.length() - 2) == '\n';
+                && source.charAt(source.length() - 1) == Constants.CHAR_ENTER
+                && source.charAt(source.length() - 2) == Constants.CHAR_ENTER;
     }
 
     /**
@@ -127,7 +127,7 @@ public class Utils {
         if (split.length > 0) {
             for (String s : split) {
                 if (s.length() == 0 && sb.length() != 0) {
-                    sb.append("\n");
+                    sb.append(Constants.CHAR_ENTER);
                     continue;
                 }
                 if (!s.trim().startsWith(symbol)) {
