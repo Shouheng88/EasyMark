@@ -3,8 +3,6 @@ apply plugin: 'com.android.library'
 android {
     compileSdkVersion 28
 
-
-
     defaultConfig {
         minSdkVersion 17
         targetSdkVersion 28
@@ -12,7 +10,6 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {
@@ -21,7 +18,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
 }
 
 dependencies {
@@ -31,4 +27,15 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    // Flexmark
+    implementation 'com.vladsch.flexmark:flexmark:0.28.32'
+    implementation 'com.vladsch.flexmark:flexmark-ext-tables:0.28.32'
+    implementation 'com.vladsch.flexmark:flexmark-ext-gfm-strikethrough:0.28.32'
+    implementation 'com.vladsch.flexmark:flexmark-ext-gfm-tasklist:0.28.32'
+    implementation 'com.vladsch.flexmark:flexmark-ext-autolink:0.28.32'
+    implementation 'com.vladsch.flexmark:flexmark-ext-abbreviation:0.28.32'
+    implementation 'com.vladsch.flexmark:flexmark-ext-superscript:0.28.32'
+    implementation 'com.vladsch.flexmark:flexmark-ext-footnotes:0.28.32'
+    implementation 'com.vladsch.flexmark:flexmark-ext-attributes:0.28.32'
 }
