@@ -1,18 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:background="#4e0b0b"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <me.shouheng.easymark.scroller.FastScrollScrollView
+        android:id="@+id/fssv"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
 
-</android.support.constraint.ConstraintLayout>
+        <me.shouheng.easymark.EasyMarkEditor
+            android:id="@+id/eme"
+            android:background="@android:color/transparent"
+            android:textColor="@android:color/white"
+            android:gravity="start"
+            android:textSize="15sp"
+            android:layout_width="match_parent"
+            android:minHeight="600dp"
+            android:padding="16dp"
+            tools:text="12312321ji12j3po21j3po213j2po13j21po米纳斯街道i是"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/my_font"/>
+
+        <!--use the custom font in editor-->
+
+    </me.shouheng.easymark.scroller.FastScrollScrollView>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+
+        <LinearLayout
+            android:id="@+id/ll"
+            android:background="#0b4681"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"/>
+
+    </HorizontalScrollView>
+
+</LinearLayout>
