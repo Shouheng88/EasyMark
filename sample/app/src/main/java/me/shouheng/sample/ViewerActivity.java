@@ -51,7 +51,7 @@ public class ViewerActivity extends AppCompatActivity {
         /* Set should use MathJax */
         emv.setUseMathJax(true);
         /* Set should escape html */
-        emv.setEscapeHtml(true);
+        emv.setEscapeHtml(false);
         /* Set the image url click listener */
         emv.setOnImageClickListener(new OnImageClickListener() {
             @Override
