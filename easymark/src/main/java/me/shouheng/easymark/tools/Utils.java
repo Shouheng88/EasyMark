@@ -8,6 +8,10 @@ import android.support.annotation.DrawableRes;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.widget.EditText;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 import me.shouheng.easymark.Constants;
 
 /**
@@ -143,5 +147,28 @@ public class Utils {
         if (sb.length() == 0) sb.append(symbol);
         editor.getText().replace(selectionStart, selectionEnd, sb.toString());
         editor.setSelection(sb.length() + selectionStart);
+    }
+
+    /**
+     * Read the content of the assets file
+     *
+     * @param context the context
+     * @param fileName the assets file name
+     * @return the asserts file content
+     */
+    public static String readAssetsContent(Context context, String fileName) {
+        try {
+            InputStream inStream = context.getResources().getAssets().open(fileName);
+            ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+            byte[] bytes = new byte[1024];
+            int len;
+            while ((len = inStream.read(bytes)) > 0) {
+                outStream.write(bytes, 0, len);
+            }
+            return outStream.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
