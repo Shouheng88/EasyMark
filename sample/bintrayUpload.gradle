@@ -1,0 +1,11 @@
+apply plugin: 'com.novoda.bintray-release'
+
+publish {
+    userOrg = 'shouheng'
+    groupId = 'me.shouheng.easymark'
+    artifactId = 'easymark'
+    repoName = 'Android'
+    publishVersion = '0.0.1'
+    desc = 'The Markdwon editor and viewer.'
+    website = 'https://github.com/Shouheng88/EasyMark'
+}
