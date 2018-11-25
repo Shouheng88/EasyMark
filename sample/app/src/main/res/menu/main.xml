@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/item_undo"
+        app:showAsAction="always"
+        android:title="Undo"
+        android:icon="@drawable/ab_ink_undo"/>
+    <item android:id="@+id/item_redo"
+        android:title="Redo"
+        app:showAsAction="always"
+        android:icon="@drawable/ab_ink_redo"/>
+    <item android:id="@+id/item_view"
+        android:title="View"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_visibility_black_24dp"/>
+</menu>

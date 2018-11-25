@@ -1,15 +1,20 @@
 package me.shouheng.sample;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.LayoutInflaterCompat;
 import android.support.v4.view.LayoutInflaterFactory;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -24,10 +29,13 @@ import me.shouheng.easymark.editor.format.DayOneFormatHandler;
 import me.shouheng.easymark.editor.format.DefaultFormatHandler;
 import me.shouheng.easymark.scroller.FastScrollScrollView;
 import me.shouheng.easymark.tools.Utils;
+import me.shouheng.sample.utils.MyUtils;
 
 public class MainActivity extends AppCompatActivity {
 
     private final static boolean isDarkTheme = false;
+
+    private EasyMarkEditor eme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,15 +52,27 @@ public class MainActivity extends AppCompatActivity {
         });
 
         super.onCreate(savedInstanceState);
-        setContentView(me.shouheng.sample.R.layout.activity_main);
+        setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle("EasyMarkEditor");
+        }
+
+        /* Get the note content from assets */
+        String defContent = Utils.readAssetsContent(this, "note.md");
 
         /* Get markdown editor */
-        final EasyMarkEditor eme = findViewById(R.id.eme);
+        eme = findViewById(R.id.eme);
         eme.setFormatPasteEnable(true);
         /* Set the format handler, custom your own handler by implementing FormatHandler */
         eme.setFormatHandler(new DayOneFormatHandler());
 //        eme.setFormatHandler(new CustomFormatHandler());
         eme.setPasteTabReplacement(Constants.DEFAULT_TAB_REPLACEMENT);
+        /* Set the default note content */
+        eme.setDefaultText(defContent);
 
         /* Custom fast scroller */
         FastScrollScrollView fssv = findViewById(R.id.fssv);
@@ -114,5 +134,42 @@ public class MainActivity extends AppCompatActivity {
                            int selectionEnd, String selection, EditText editor, Object... params) {
             super.handle(formatId, source, selectionStart, selectionEnd, selection, editor, params);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    /**
+     * Tint the icon of menu items
+     *
+     * @param menu the menu
+     * @return the result
+     */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        /* We want to use the white icon, so we set the isDarkTheme true. */
+        MyUtils.themeMenu(menu, true);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.item_undo:
+                eme.undo();
+                break;
+            case R.id.item_redo:
+                eme.redo();
+                break;
+            case R.id.item_view:
+                Intent intent = new Intent(this, ViewerActivity.class);
+                intent.putExtra(ViewerActivity.EXTRA_KEY_NOTE_CONTENT, eme.getText().toString());
+                startActivity(intent);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
