@@ -1,2 +1,3 @@
-include ':app', ':easymark'
+include ':app', ':easymark', ':softinputlayout'
 project(':easymark').projectDir = new File('../easymark')
+project(':softinputlayout').projectDir = new File('../softinputlayout')

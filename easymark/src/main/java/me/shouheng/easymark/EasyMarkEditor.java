@@ -534,7 +534,7 @@ public class EasyMarkEditor extends AppCompatEditText {
 
     /**
      * The stack made by the {@link LinkedList}, we don't use the {@link Stack} for it synchronized
-     * many methods, which may weaken the effect.
+     * many methods, which may weaken the performance.
      *
      * @param <E>
      */
