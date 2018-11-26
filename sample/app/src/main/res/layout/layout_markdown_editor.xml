@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frame"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <me.shouheng.easymark.scroller.FastScrollScrollView
+        android:id="@+id/fssv"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <me.shouheng.easymark.EasyMarkEditor
+            android:id="@+id/eme"
+            android:background="@android:color/transparent"
+            android:textColor="@android:color/white"
+            android:gravity="start"
+            android:textSize="15sp"
+            android:layout_width="match_parent"
+            android:minHeight="600dp"
+            android:padding="16dp"
+            tools:text="12312321ji12j3po21j3po213j2po13j21po米纳斯街道i是"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/my_font"/>
+
+        <!--use the custom font in editor-->
+
+    </me.shouheng.easymark.scroller.FastScrollScrollView>
+
+    <RelativeLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        tools:visibility="visible"
+        android:visibility="gone">
+
+        <TextView
+            android:text="Demo"
+            android:textSize="18sp"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:background="@android:color/holo_green_dark"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </RelativeLayout>
+
+</LinearLayout>
