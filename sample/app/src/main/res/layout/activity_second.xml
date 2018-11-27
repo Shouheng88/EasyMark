@@ -22,18 +22,18 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:orientation="vertical"
-        android:background="#4e0b0b"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <me.shouheng.sample.widget.MDEditorLayout
             android:id="@+id/mel"
+            android:background="#4e0b0b"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-    </LinearLayout>
+    </FrameLayout>
 
 </android.support.design.widget.CoordinatorLayout>

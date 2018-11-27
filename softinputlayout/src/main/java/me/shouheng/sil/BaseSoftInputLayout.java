@@ -11,25 +11,73 @@ import android.view.View;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
- * Created on 2018/11/26.
+ * @author WngShhng (shouheng2015@gmail.com)
+ * @version $Id: BaseSoftInputLayout, v 0.1 2018/11/26 22:36 shouh Exp$
  */
-public abstract class BaseSoftInputLayout extends LinearLayout {
+public abstract class BaseSoftInputLayout extends FrameLayout {
 
-    private View frame;
-    private View container;
-    private EditText editText;
+    /**
+     * The flag, the container will automatically be showed and hidden
+     * when the keyboard state changed.
+     */
+    private final static int FLAG_AUTOMATIC = 0x00;
 
-    private int mLastHitBottom;
-    private int mLastCoverHeight;
-    private int mNavigationBarHeight = -1;
+    /**
+     * The flag, only show the soft input layout, the container will be displayed.
+     */
+    private final static int SHOW_SOFT_INPUT_FLAG_ONLY = 0x02;
+
+    /**
+     * The flag, hide the soft input layout only, the container won't be hidden.
+     */
+    private final static int HIDE_SOFT_INPUT_FLAG_ONLY = 0x03;
+
+    /**
+     * Field is the keyboard displaying.
+     */
+    private boolean keyboardShowing;
+
+    /**
+     * Navigation bar height
+     */
+    private int navigationBarHeight = -1;
+
+    /**
+     * The height of keyboard.
+     */
+    private int keyboardHeight;
+
+    /**
+     * If you want to add a control panel to the container, add it the layout and set the inner
+     * panel height using {@link #setOverHeight(int)}. The control panel will be managed by the
+     * base soft input layout automatically.
+     */
+    private int overHeight;
 
     /**
      * Decor view, or current view
      */
     private View rootView;
+
+    /**
+     * The keyboard state change listener.
+     */
+    private List<OnKeyboardStateChangeListener> onKeyboardStateChangeListeners;
+
+    private View frame;
+    private View container;
+    private EditText editText;
+
+    private int stateFlag;
+    private int lastHitBottom;
+    private int lastCoverHeight;
+    private int hiddenHeight;
 
     public BaseSoftInputLayout(Context context) {
         super(context);
@@ -85,6 +133,26 @@ public abstract class BaseSoftInputLayout extends LinearLayout {
     protected abstract EditText getEditText();
 
     private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        /* Config the keyboard state change listeners. */
+        this.onKeyboardStateChangeListeners = new LinkedList<>();
+        this.onKeyboardStateChangeListeners.add(new OnKeyboardStateChangeListener() {
+            @Override
+            public void onShown(int height) {
+                if (stateFlag == FLAG_AUTOMATIC) {
+                    showContainer();
+                }
+                stateFlag = FLAG_AUTOMATIC;
+            }
+
+            @Override
+            public void onHidden(int height) {
+                if (stateFlag == FLAG_AUTOMATIC) {
+                        hideContainer();
+                }
+                stateFlag = FLAG_AUTOMATIC;
+            }
+        });
+
         /* Initialize view */
         doInitView(context, attrs, defStyleAttr, defStyleRes);
 
@@ -113,33 +181,79 @@ public abstract class BaseSoftInputLayout extends LinearLayout {
      * Detect the keyboard state when the global layout state changed.
      */
     private void detectKeyboardState() {
-        /* Get the visible display frame, used to detect the keyboard height. */
+        /* Get the visible size of root view. */
         Rect visibleRect = new Rect();
         rootView.getWindowVisibleDisplayFrame(visibleRect);
 
-        /* Get the focusable size on rootView. */
+        /* Get size of root view. */
         Rect hitRect = new Rect();
         rootView.getHitRect(hitRect);
 
         /* Get the cover height, we will use to judge keyboard state. */
         int coverHeight = hitRect.bottom - visibleRect.bottom;
 
-        if (coverHeight > mNavigationBarHeight) {
+        /* Fix show/hide navigation bar for MeiZu */
+        if (lastCoverHeight == coverHeight && lastHitBottom == hitRect.bottom) {
+            return;
+        }
 
-            container.getLayoutParams().height = coverHeight + 50;
-            container.setVisibility(VISIBLE);
-            container.requestLayout();
+        /* Keep last values */
+        lastHitBottom = hitRect.bottom;
+        int deltaCoverHeight = coverHeight - lastCoverHeight;
+        lastCoverHeight = coverHeight;
 
-            refreshFrameLayout(visibleRect.bottom + coverHeight);
+        if (coverHeight > navigationBarHeight) {
+            /* Fix show/hide navigation bar for HuaWei */
+            if ((deltaCoverHeight == navigationBarHeight
+                    || deltaCoverHeight == -navigationBarHeight) && keyboardShowing) {
+                hiddenHeight += deltaCoverHeight;
+            }
+            int shownHeight = coverHeight - hiddenHeight;
+
+            /* Calculate the height of the container. */
+            if (keyboardHeight != shownHeight) {
+                keyboardHeight = shownHeight;
+                container.getLayoutParams().height = shownHeight + overHeight;
+                container.requestLayout();
+            }
+
+            /* Keyboard state callback */
+            if (!onKeyboardStateChangeListeners.isEmpty()) {
+                for (OnKeyboardStateChangeListener listener : onKeyboardStateChangeListeners) {
+                    listener.onShown(hiddenHeight);
+                }
+            }
+
+            keyboardShowing = true;
+
+            refreshFrameLayout(visibleRect.bottom + shownHeight);
         } else {
+            /* Fix show/hide navigation bar for HuaWei */
+            if ((deltaCoverHeight == navigationBarHeight
+                    || deltaCoverHeight == -navigationBarHeight) && !keyboardShowing) {
+                hiddenHeight += deltaCoverHeight;
+            }
 
-            container.setVisibility(GONE);
+            if (coverHeight != hiddenHeight) {
+                hiddenHeight = coverHeight;
+            }
+
+            /* Keyboard state callback */
+            if (!onKeyboardStateChangeListeners.isEmpty()) {
+                for (OnKeyboardStateChangeListener listener : onKeyboardStateChangeListeners) {
+                    listener.onHidden(hiddenHeight);
+                }
+            }
+
+            keyboardShowing = false;
+
             refreshFrameLayout(visibleRect.bottom);
         }
     }
 
     /**
-     * Refresh the layout of {@link #frame}
+     * Refresh the layout of {@link #frame}. This method is used to config the height of the frame,
+     * that is, the height of the parent of the whole view.
      *
      * @param bottom the bottom
      */
@@ -163,16 +277,27 @@ public abstract class BaseSoftInputLayout extends LinearLayout {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        if (mNavigationBarHeight == -1) {
+        if (navigationBarHeight == -1) {
             frame.getLayoutParams().height = getMeasuredHeight();
-            mNavigationBarHeight = Utils.getNavigationBarHeight(getContext());
+            navigationBarHeight = Utils.getNavigationBarHeight(getContext());
         }
+    }
+
+    /**
+     * Show the soft input layout.
+     */
+    public void showSoftInput() {
+        if(editText == null) return;
+        editText.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        assert imm != null;
+        imm.showSoftInput(editText, InputMethodManager.RESULT_UNCHANGED_SHOWN);
     }
 
     /**
      * Hide the soft input layout.
      */
-    protected void hideSoftInput() {
+    public void hideSoftInput() {
         if(editText == null) return;
         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
         assert imm != null;
@@ -180,13 +305,88 @@ public abstract class BaseSoftInputLayout extends LinearLayout {
     }
 
     /**
-     * Show the soft input layout.
+     * Show soft input layout but don't show the container.
      */
-    protected void showSoftInput() {
-        if(editText == null) return;
-        editText.requestFocus();
-        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
-        assert imm != null;
-        imm.showSoftInput(editText, InputMethodManager.RESULT_UNCHANGED_SHOWN);
+    public void showSoftInputOnly() {
+        stateFlag = SHOW_SOFT_INPUT_FLAG_ONLY;
+        showSoftInput();
+    }
+
+    /**
+     * Hide the soft input layout, but keep the container
+     */
+    public void hideSoftInputOnly() {
+        stateFlag = HIDE_SOFT_INPUT_FLAG_ONLY;
+        hideSoftInput();
+    }
+
+    /**
+     * Display the container.
+     */
+    public void showContainer() {
+        if (container != null) {
+            container.setVisibility(VISIBLE);
+        }
+    }
+
+    /**
+     * Hide the container.
+     */
+    public void hideContainer() {
+        if (container != null) {
+            container.setVisibility(GONE);
+        }
+    }
+
+    /**
+     * Set the height above the keyboard. The layout on the area will be managed by the container.
+     *
+     * @param overHeight the over height
+     */
+    public void setOverHeight(int overHeight) {
+        this.overHeight = overHeight;
+    }
+
+    /**
+     * Is the keyboard displaying
+     *
+     * @return true->displaying
+     */
+    public boolean isKeyboardShowing() {
+        return keyboardShowing;
+    }
+
+    /**
+     * Get the keyboard height, the value is valid only when the keyboard is shown
+     *
+     * @return the height of keyboard
+     */
+    public int getKeyboardHeight() {
+        return keyboardHeight;
+    }
+
+    /**
+     * Add the keyboard state change listener to the list.
+     *
+     * @param onKeyboardStateChangeListener the keyboard state change listener
+     */
+    public void addOnKeyboardStateChangeListener(OnKeyboardStateChangeListener onKeyboardStateChangeListener) {
+        this.onKeyboardStateChangeListeners.add(onKeyboardStateChangeListener);
+    }
+
+    public interface OnKeyboardStateChangeListener {
+        /**
+         * Called when the keyboard is showing
+         *
+         * @param height the height of keyboard
+         */
+        void onShown(int height);
+
+        /**
+         * Called when the keyboard is hidden
+         *
+         * @param height the height of hidden height
+         */
+        void onHidden(int height);
     }
 }
