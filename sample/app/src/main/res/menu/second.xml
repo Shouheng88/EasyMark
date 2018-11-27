@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/show"
         android:title="Show soft input"/>
     <item android:id="@+id/show_only"
@@ -8,4 +9,8 @@
         android:title="Hide soft input"/>
     <item android:id="@+id/hide_only"
         android:title="Hide soft input ONLY"/>
+    <item android:id="@+id/item_view"
+        android:title="View"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_visibility_black_24dp"/>
 </menu>

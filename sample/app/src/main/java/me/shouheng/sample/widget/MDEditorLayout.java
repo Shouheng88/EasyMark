@@ -1,14 +1,23 @@
 package me.shouheng.sample.widget;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import me.shouheng.easymark.EasyMarkEditor;
+import me.shouheng.easymark.editor.Format;
+import me.shouheng.easymark.scroller.FastScrollScrollView;
+import me.shouheng.easymark.tools.Utils;
 import me.shouheng.sample.R;
 import me.shouheng.sil.BaseSoftInputLayout;
 
@@ -20,7 +29,8 @@ public class MDEditorLayout extends BaseSoftInputLayout {
 
     private View frame;
     private View container;
-    private EditText editText;
+    private EasyMarkEditor editText;
+    private FastScrollScrollView fssv;
 
     public MDEditorLayout(Context context) {
         super(context);
@@ -46,6 +56,81 @@ public class MDEditorLayout extends BaseSoftInputLayout {
         frame = findViewById(R.id.frame);
         container = findViewById(R.id.container);
         editText = findViewById(R.id.eme);
+        fssv = findViewById(R.id.fssv);
+
+        RecyclerView rv = findViewById(R.id.rv);
+        Adapter adapter = new Adapter(context, new Adapter.OnFormatClickListener() {
+            @Override
+            public void onFormatClick(Format format) {
+                editText.useFormat(format);
+            }
+        });
+        rv.setLayoutManager(new GridLayoutManager(context, 8));
+        rv.setAdapter(adapter);
+
+        findViewById(R.id.iv_soft).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isKeyboardShowing()) {
+                    hideSoftInputOnly();
+                } else {
+                    showSoftInputOnly();
+                }
+            }
+        });
+    }
+
+    public final static class Adapter extends RecyclerView.Adapter<Adapter.Holder> {
+
+        private Context context;
+
+        private OnFormatClickListener onFormatClickListener;
+
+        Adapter(Context context, OnFormatClickListener onFormatClickListener) {
+            this.context = context;
+            this.onFormatClickListener = onFormatClickListener;
+        }
+
+        @NonNull
+        @Override
+        public Holder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+            View root = LayoutInflater.from(context).inflate(R.layout.item_format, null, false);
+            return new Holder(root);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull Holder holder, int i) {
+            Format format = Format.values()[i];
+            holder.iv.setImageDrawable(Utils.tintDrawable(context, format.drawableResId, Color.WHITE));
+        }
+
+        @Override
+        public int getItemCount() {
+            return Format.values().length;
+        }
+
+        class Holder extends RecyclerView.ViewHolder {
+
+            ImageView iv;
+
+            Holder(@NonNull View itemView) {
+                super(itemView);
+
+                iv = itemView.findViewById(R.id.iv);
+                itemView.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (onFormatClickListener != null) {
+                            onFormatClickListener.onFormatClick(Format.values()[getAdapterPosition()]);
+                        }
+                    }
+                });
+            }
+        }
+
+        public interface OnFormatClickListener {
+            void onFormatClick(Format format);
+        }
     }
 
     @Override
@@ -58,8 +143,22 @@ public class MDEditorLayout extends BaseSoftInputLayout {
         return container;
     }
 
+    /**
+     * Get the markdown editor.
+     *
+     * @return the editor
+     */
     @Override
-    protected EditText getEditText() {
+    public EasyMarkEditor getEditText() {
         return editText;
+    }
+
+    /**
+     * Get the fast scroll view.
+     *
+     * @return the fast scroll view.
+     */
+    public FastScrollScrollView getFastScrollView() {
+        return fssv;
     }
 }
