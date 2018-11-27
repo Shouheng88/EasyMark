@@ -13,4 +13,6 @@
         android:title="View"
         app:showAsAction="always"
         android:icon="@drawable/ic_visibility_black_24dp"/>
+    <item android:id="@+id/item_second"
+        android:title="Soft Input Demo"/>
 </menu>

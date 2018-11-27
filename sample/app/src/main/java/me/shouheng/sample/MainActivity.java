@@ -169,6 +169,10 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra(ViewerActivity.EXTRA_KEY_NOTE_CONTENT, eme.getText().toString());
                 startActivity(intent);
                 break;
+            case R.id.item_second:
+                Intent intent1 = new Intent(this, SecondActivity.class);
+                startActivity(intent1);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
