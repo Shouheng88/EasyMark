@@ -1,0 +1,11 @@
+apply plugin: 'com.novoda.bintray-release'
+
+publish {
+    userOrg = 'shouheng'
+    groupId = 'me.shouheng.easymark'
+    artifactId = 'sil'
+    repoName = 'Android'
+    publishVersion = '0.0.1'
+    desc = 'The open souced soft input layout for EasyMarkEditor.'
+    website = 'https://github.com/Shouheng88/EasyMark'
+}
