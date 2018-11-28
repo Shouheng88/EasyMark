@@ -73,7 +73,7 @@ The basic format of using the image in markdown is:
 - title is the text to display when the mosue hover on the image
 - URL is the url of an image, relative or absolute
 
-![Sample](https://github.com/Shouheng88/MarkNote/raw/master/images/app.png "MarkNote Logo")
+![Sample](https://github.com/Shouheng88/MarkNote/blob/master/resources/images/app.png "MarkNote Logo")
 
 ### 7. Link
 
