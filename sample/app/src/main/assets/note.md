@@ -93,7 +93,7 @@ Here is an example:
 
 Also your can use the image link,
 
-[![Sample](https://github.com/Shouheng88/MarkNote/raw/master/images/app.png "MarkNote Logo")](https://github.com/Shouheng88/MarkNote)
+[![Sample](https://github.com/Shouheng88/MarkNote/blob/master/resources/images/app.png "MarkNote Logo")](https://github.com/Shouheng88/MarkNote)
 
 ### 8. Anchor
 
