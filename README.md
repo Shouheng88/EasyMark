@@ -21,7 +21,8 @@ For editor:
 1. Based on the AppCompactEditText;
 2. Not real-time parsing and display, only display your raw markdown text;
 3. You can add your own functions by implementing the interface provided;
-4. Provided cool fast scroller.
+4. Provided cool fast scroller;
+5. Support the BaseSoftInputLayout, to use it, you need to inlcude the sil dependence.
 
 For viewer:
 
@@ -31,7 +32,8 @@ For viewer:
 4. Support MathJax;
 5. Provided the interface to handle the image and link click event;
 6. Provided the interface for custom CSS;
-7. Provided cool fast scroller.
+7. Support the raw HTML in markdown;
+8. Provided cool fast scroller.
 
 ## Usage
 
@@ -39,10 +41,32 @@ First, include my maven center,
 
     maven { url "https://shouheng.bintray.com/Android" }
 
-Then add the dependence in your proejct,
+Then add the dependence in your proejct if you want to use EasyMark editor and viewer,
 
     implementation 'me.shouheng.easymark:easymark:0.0.1'
 
+Or maven, 
+	
+	<dependency>
+	  <groupId>me.shouheng.easymark</groupId>
+	  <artifactId>easymark</artifactId>
+	  <version>0.0.1</version>
+	  <type>pom</type>
+	</dependency>	
+	
+If you want to use the SoftInputLayout in your project, include the following dependence in your gradle,
+
+	implementation 'me.shouheng.easymark:sil:0.0.1'
+
+Or maven,
+
+	<dependency>
+	  <groupId>me.shouheng.easymark</groupId>
+	  <artifactId>sil</artifactId>
+	  <version>0.0.1</version>
+	  <type>pom</type>
+	</dependency>
+	
 For more, please refer to the sample project.
 
 ## Contact
