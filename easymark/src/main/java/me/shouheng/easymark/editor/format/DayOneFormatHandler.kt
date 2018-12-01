@@ -13,7 +13,7 @@ import me.shouheng.easymark.editor.dayone.extension.selectedLine
  *
  * @author WngShhng (shouheng2015@gmail.com)
  * @version $Id: DayOneFormatHandler, v 0.1 2018/11/24 16:14 shouh Exp$ */
-class DayOneFormatHandler : DefaultFormatHandler() {
+open class DayOneFormatHandler : DefaultFormatHandler() {
 
     override fun handle(formatId: Int, source: String?, selectionStart: Int, selectionEnd: Int,
                         selection: String?, editor: EditText?, vararg params: Any?) {

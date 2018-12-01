@@ -27,13 +27,12 @@ For editor:
 For viewer:
 
 1. Based on the WebView, for it has a better performance and many cool features;
-2. Support html;
-3. Support many basic markdown grammers;
-4. Support MathJax;
-5. Provided the interface to handle the image and link click event;
-6. Provided the interface for custom CSS;
-7. Support the raw HTML in markdown;
-8. Provided cool fast scroller.
+2. Support many basic markdown grammers;
+3. Support MathJax;
+4. Provided the interface to handle the image and link click event;
+5. Provided the interface for custom CSS;
+6. Support the raw HTML in markdown;
+7. Provided cool fast scroller.
 
 ## Usage
 
@@ -43,14 +42,14 @@ First, include my maven center,
 
 Then add the dependence in your proejct if you want to use EasyMark editor and viewer,
 
-    implementation 'me.shouheng.easymark:easymark:0.0.1'
+    implementation 'me.shouheng.easymark:easymark:0.0.2'
 
 Or maven, 
 	
 	<dependency>
 	  <groupId>me.shouheng.easymark</groupId>
 	  <artifactId>easymark</artifactId>
-	  <version>0.0.1</version>
+	  <version>0.0.2</version>
 	  <type>pom</type>
 	</dependency>	
 	
@@ -68,6 +67,11 @@ Or maven,
 	</dependency>
 	
 For more, please refer to the sample project.
+
+## Change log
+
+- EasyMark VERSION 0.0.1 : First release
+- EasyMark VERSION 0.0.2 : Fixed the method name and set the DayOneFormatHandler not final
 
 ## Contact
 

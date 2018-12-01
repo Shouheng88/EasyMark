@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
      * The {@link DefaultFormatHandler} has a default implementation of format handler. You can also
      * implement your own logic by directly implement the {@link me.shouheng.easymark.editor.format.FormatHandler}
      */
-    private static class CustomFormatHandler extends DefaultFormatHandler {
+    private static class CustomFormatHandler extends DayOneFormatHandler {
 
         /**
          * Implement your own format handler

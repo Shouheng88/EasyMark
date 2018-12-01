@@ -132,7 +132,7 @@ public class EasyMarkEditor extends AppCompatEditText {
      *
      * @param formatId format id
      */
-    public final void userFormat(int formatId) {
+    public final void useFormat(int formatId) {
         String source = this.getText().toString();
         int selectionStart = getSelectionStart();
         int selectionEnd = getSelectionEnd();
