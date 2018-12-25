@@ -14,7 +14,7 @@ allprojects {
     repositories {
         google()
         jcenter()
-        maven { url "https://shouheng.bintray.com/Android" }
+        maven { url "https://dl.bintray.com/easymark/Android" }
     }
 }
 

@@ -1,7 +1,7 @@
 apply plugin: 'com.novoda.bintray-release'
 
 publish {
-    userOrg = 'shouheng'
+    userOrg = 'easymark'
     groupId = 'me.shouheng.easymark'
     artifactId = 'easymark'
     repoName = 'Android'

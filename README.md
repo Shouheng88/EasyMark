@@ -38,7 +38,7 @@ For viewer:
 
 First, include my maven center,
 
-    maven { url "https://shouheng.bintray.com/Android" }
+    maven { url "https://dl.bintray.com/easymark/Android" }
 
 Then add the dependence in your proejct if you want to use EasyMark editor and viewer,
 
