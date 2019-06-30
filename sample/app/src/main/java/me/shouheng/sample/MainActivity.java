@@ -1,18 +1,11 @@
 package me.shouheng.sample;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.view.LayoutInflaterCompat;
-import android.support.v4.view.LayoutInflaterFactory;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import me.shouheng.easymark.Constants;
 import me.shouheng.easymark.EasyMarkEditor;
@@ -29,31 +21,24 @@ import me.shouheng.easymark.editor.format.DayOneFormatHandler;
 import me.shouheng.easymark.editor.format.DefaultFormatHandler;
 import me.shouheng.easymark.scroller.FastScrollScrollView;
 import me.shouheng.easymark.tools.Utils;
+import me.shouheng.mvvm.base.CommonActivity;
+import me.shouheng.sample.databinding.ActivityMainBinding;
 import me.shouheng.sample.utils.MyUtils;
+import me.shouheng.sample.vm.MainViewModel;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends CommonActivity<ActivityMainBinding, MainViewModel> {
 
     private final static boolean isDarkTheme = false;
 
     private EasyMarkEditor eme;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        LayoutInflaterCompat.setFactory(LayoutInflater.from(this), new LayoutInflaterFactory() {
-            @Override
-            public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
-                AppCompatDelegate delegate = getDelegate();
-                View view = delegate.createView(parent, name, context, attrs);
-                if ((view instanceof TextView)) {
-                    ((TextView) view).setTypeface(ResourcesCompat.getFont(MainActivity.this, R.font.a));
-                }
-                return view;
-            }
-        });
+    protected int getLayoutResId() {
+        return R.layout.activity_main;
+    }
 
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
+    @Override
+    protected void doCreateView(@Nullable Bundle savedInstanceState) {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();

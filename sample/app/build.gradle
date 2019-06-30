@@ -16,6 +16,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    dataBinding {
+        enabled true
+    }
 }
 
 dependencies {
@@ -30,4 +33,5 @@ dependencies {
 //    implementation project(path: ':softinputlayout')
     implementation 'me.shouheng.easymark:easymark:0.0.2'
     implementation 'me.shouheng.easymark:sil:0.0.1'
+    implementation 'me.shouheng.mvvm:mvvm-core:1.0.1'
 }
