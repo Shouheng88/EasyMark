@@ -17,41 +17,17 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * Base soft input layout.
+ *
  * @author WngShhng (shouheng2015@gmail.com)
  * @version $Id: BaseSoftInputLayout, v 0.1 2018/11/26 22:36 shouh Exp$
  */
 public abstract class BaseSoftInputLayout extends FrameLayout {
 
-    /**
-     * The flag, the container will automatically be showed and hidden
-     * when the keyboard state changed.
-     */
-    private final static int FLAG_AUTOMATIC = 0x00;
-
-    /**
-     * The flag, only show the soft input layout, the container will be displayed.
-     */
-    private final static int SHOW_SOFT_INPUT_FLAG_ONLY = 0x02;
-
-    /**
-     * The flag, hide the soft input layout only, the container won't be hidden.
-     */
-    private final static int HIDE_SOFT_INPUT_FLAG_ONLY = 0x03;
-
-    /**
-     * Field is the keyboard displaying.
-     */
-    private boolean keyboardShowing;
-
-    /**
-     * Navigation bar height
-     */
-    private int navigationBarHeight = -1;
-
-    /**
-     * The height of keyboard.
-     */
-    private int keyboardHeight;
+    private View rootView;
+    private View frame;
+    private View container;
+    private EditText editText;
 
     /**
      * If you want to add a control panel to the container, add it the layout and set the inner
@@ -59,25 +35,16 @@ public abstract class BaseSoftInputLayout extends FrameLayout {
      * base soft input layout automatically.
      */
     private int overHeight;
-
-    /**
-     * Decor view, or current view
-     */
-    private View rootView;
-
-    /**
-     * The keyboard state change listener.
-     */
-    private List<OnKeyboardStateChangeListener> onKeyboardStateChangeListeners;
-
-    private View frame;
-    private View container;
-    private EditText editText;
-
-    private int stateFlag;
+    private boolean keyboardShowing;
+    private int navigationBarHeight = -1;
+    private int keyboardHeight;
+    @SILState
+    private int silState;
     private int lastHitBottom;
     private int lastCoverHeight;
     private int hiddenHeight;
+
+    private List<OnKeyboardStateChangeListener> onKeyboardStateChangeListeners;
 
     public BaseSoftInputLayout(Context context) {
         super(context);
@@ -138,18 +105,18 @@ public abstract class BaseSoftInputLayout extends FrameLayout {
         this.onKeyboardStateChangeListeners.add(new OnKeyboardStateChangeListener() {
             @Override
             public void onShown(int height) {
-                if (stateFlag == FLAG_AUTOMATIC) {
+                if (silState == SILState.AUTOMATIC) {
                     showContainer();
                 }
-                stateFlag = FLAG_AUTOMATIC;
+                silState = SILState.AUTOMATIC;
             }
 
             @Override
             public void onHidden(int height) {
-                if (stateFlag == FLAG_AUTOMATIC) {
-                        hideContainer();
+                if (silState == SILState.AUTOMATIC) {
+                    hideContainer();
                 }
-                stateFlag = FLAG_AUTOMATIC;
+                silState = SILState.AUTOMATIC;
             }
         });
 
@@ -279,13 +246,10 @@ public abstract class BaseSoftInputLayout extends FrameLayout {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         if (navigationBarHeight == -1) {
             frame.getLayoutParams().height = getMeasuredHeight();
-            navigationBarHeight = Utils.getNavigationBarHeight(getContext());
+            navigationBarHeight = SILUtils.getNavigationBarHeight(getContext());
         }
     }
 
-    /**
-     * Show the soft input layout.
-     */
     public void showSoftInput() {
         if(editText == null) return;
         editText.requestFocus();
@@ -294,9 +258,6 @@ public abstract class BaseSoftInputLayout extends FrameLayout {
         imm.showSoftInput(editText, InputMethodManager.RESULT_UNCHANGED_SHOWN);
     }
 
-    /**
-     * Hide the soft input layout.
-     */
     public void hideSoftInput() {
         if(editText == null) return;
         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
@@ -304,63 +265,36 @@ public abstract class BaseSoftInputLayout extends FrameLayout {
         imm.hideSoftInputFromWindow(editText.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
-    /**
-     * Show soft input layout but don't show the container.
-     */
     public void showSoftInputOnly() {
-        stateFlag = SHOW_SOFT_INPUT_FLAG_ONLY;
+        silState = SILState.SHOW_SOFT_INPUT_ONLY;
         showSoftInput();
     }
 
-    /**
-     * Hide the soft input layout, but keep the container
-     */
     public void hideSoftInputOnly() {
-        stateFlag = HIDE_SOFT_INPUT_FLAG_ONLY;
+        silState = SILState.HIDE_SOFT_INPUT_ONLY;
         hideSoftInput();
     }
 
-    /**
-     * Display the container.
-     */
     public void showContainer() {
         if (container != null) {
             container.setVisibility(VISIBLE);
         }
     }
 
-    /**
-     * Hide the container.
-     */
     public void hideContainer() {
         if (container != null) {
             container.setVisibility(GONE);
         }
     }
 
-    /**
-     * Set the height above the keyboard. The layout on the area will be managed by the container.
-     *
-     * @param overHeight the over height
-     */
     public void setOverHeight(int overHeight) {
         this.overHeight = overHeight;
     }
 
-    /**
-     * Is the keyboard displaying
-     *
-     * @return true->displaying
-     */
     public boolean isKeyboardShowing() {
         return keyboardShowing;
     }
 
-    /**
-     * Get the keyboard height, the value is valid only when the keyboard is shown
-     *
-     * @return the height of keyboard
-     */
     public int getKeyboardHeight() {
         return keyboardHeight;
     }

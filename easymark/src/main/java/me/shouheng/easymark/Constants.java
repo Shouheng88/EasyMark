@@ -1,16 +1,18 @@
 package me.shouheng.easymark;
 
 /**
+ * Constants for EasyMark
+ *
  * @author WngShhng (shouheng2015@gmail.com)
  * @version $Id: Constants, v 0.1 2018/11/23 22:36 shouh Exp$
  */
-public interface  Constants {
-    char CHAR_ENTER = '\n';
-    String STRING_ENTER = "\n";
-    String STRING_TAB = "\t";
-    String DEFAULT_TAB_REPLACEMENT = "    ";
-    String POINT_LIST_START_CHARS = "* ";
-    String NUMBER_LIST_START_CHARS = "1. ";
+public class Constants {
+    public static final char CHAR_ENTER                 = '\n';
+    public static final String STRING_ENTER             = "\n";
+    public static final String STRING_TAB               = "\t";
+    public static final String DEFAULT_TAB_REPLACEMENT  = "    ";
+    public static final String POINT_LIST_START_CHARS   = "* ";
+    public static final String NUMBER_LIST_START_CHARS  = "1. ";
 
     /**
      * TODO change the MathJax regex
@@ -26,15 +28,6 @@ public interface  Constants {
      *
      * The problem now: the regex expression can only recognize the single lined MathJax expression
      */
-    String MATH_JAX_REGEX_EXPRESSION = "[$].+.[$]";
-
-    /**
-     * Light styled css assets name
-     */
-    String LIGHT_STYLE_CSS_ASSETS_NAME = "light_style.css";
-
-    /**
-     * Dark styled css assets name
-     */
-    String DARK_STYLE_CSS_ASSETS_NAME = "dark_style.css";
+    public static final String MATH_JAX_REGEX_EXPRESSION    = "[$].+.[$]";
+    public static final String DARK_STYLE_CSS_ASSETS_NAME   = "mark.css";
 }

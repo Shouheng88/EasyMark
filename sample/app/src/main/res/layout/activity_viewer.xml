@@ -22,12 +22,14 @@
 
     <LinearLayout
         android:orientation="vertical"
+        android:background="#4e0b0b"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <me.shouheng.easymark.EasyMarkViewer
             android:id="@+id/emv"
+            android:background="@android:color/transparent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 

@@ -4,14 +4,12 @@ import android.content.Context;
 import android.content.res.Resources;
 
 /**
+ * Soft input layout utils
+ *
  * @author WngShhng (shouheng2015@gmail.com)
  * @version $Id: Utils, v 0.1 2018/11/26 22:21 shouh Exp$
  */
-public class Utils {
-
-    final static String SHARED_PREFERENCES_NAME = "__soft_input_layout_preferences";
-
-    final static String PREFERENCES_KEY_KEYBOARD_HEIGHT = "__pref_keyboard_height";
+class SILUtils {
 
     /**
      * Get the navigation bar height.

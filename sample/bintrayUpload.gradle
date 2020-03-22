@@ -5,7 +5,7 @@ publish {
     groupId = 'me.shouheng.easymark'
     artifactId = 'easymark'
     repoName = 'Android'
-    publishVersion = '0.0.2'
+    publishVersion = '0.1.0'
     desc = 'The Markdwon editor and viewer.'
     website = 'https://github.com/Shouheng88/EasyMark'
 }
