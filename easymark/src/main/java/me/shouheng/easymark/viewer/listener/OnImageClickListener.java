@@ -1,6 +1,8 @@
 package me.shouheng.easymark.viewer.listener;
 
 /**
+ * Image click event callback
+ *
  * @author WngShhng (shouheng2015@gmail.com)
  * @version $Id: OnImageClickListener, v 0.1 2018/11/24 23:32 shouh Exp$
  */

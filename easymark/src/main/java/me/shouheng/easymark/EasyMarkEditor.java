@@ -18,24 +18,16 @@ import me.shouheng.easymark.editor.format.DefaultFormatHandler;
 import me.shouheng.easymark.editor.format.FormatHandler;
 
 /**
+ * Editor
+ *
  * @author WngShhng (shouheng2015@gmail.com)
  * @version $Id: EasyMarkEditor, v 0.1 2018/11/23 18:55 shouh Exp$
  */
 public class EasyMarkEditor extends AppCompatEditText {
 
-    /**
-     * Action index
-     */
     private int index;
 
-    /**
-     * History stack, used for undo option.
-     */
     private Stack<Action> history = new Stack<>();
-
-    /**
-     * History back stack, used for redo option.
-     */
     private Stack<Action> historyBack = new Stack<>();
 
     /**

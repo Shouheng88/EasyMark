@@ -1,6 +1,8 @@
 package me.shouheng.easymark.viewer.listener;
 
 /**
+ * Link or url click callback
+ *
  * @author WngShhng (shouheng2015@gmail.com)
  * @version $Id: OnUrlClickListener, v 0.1 2018/11/24 20:49 shouh Exp$
  */

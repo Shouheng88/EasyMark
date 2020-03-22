@@ -41,6 +41,8 @@ public class FastScrollWebView extends WebView implements FastScrollable {
 
     private void createFastScrollDelegate(Context context) {
         mFastScrollDelegate = new FastScrollDelegate.Builder(this).build();
+        this.setBackgroundColor(0); // 设置背景色
+        this.getBackground().setAlpha(0); // 设置填充透明度 范围：0-255
     }
 
     @Override

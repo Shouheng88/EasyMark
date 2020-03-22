@@ -49,8 +49,6 @@ import me.shouheng.easymark.viewer.ext.mark.MarkExtension;
 import me.shouheng.easymark.viewer.ext.mathjax.MathJax;
 import me.shouheng.easymark.viewer.ext.mathjax.MathJaxExtension;
 
-import static me.shouheng.easymark.EasyMarkViewer.DARK_STYLE_CSS;
-
 /**
  * The async task used to parse the markdown content to html.
  *
@@ -59,61 +57,27 @@ import static me.shouheng.easymark.EasyMarkViewer.DARK_STYLE_CSS;
  */
 public class MarkdownParser extends AsyncTask<String, String, String> {
 
-    private static final String TAG = "MarkdownParser";
+    private static Pattern mathJaxPattern = Pattern.compile(Constants.MATH_JAX_REGEX_EXPRESSION);
 
-    /**
-     * The MathJax regen expression pattern
-     */
-    private static Pattern mathJaxPattern;
-
-    /**
-     * extensions to use on this parser
-     */
     private final List<Extension> extensions;
 
-    /**
-     * Options for parser
-     */
     private final DataHolder options;
 
-    /**
-     * Weak reference to the context
-     */
     private WeakReference<Context> contextWeakRef;
 
-    /**
-     * Whether use MathJax
-     */
     private boolean useMathJax;
 
-    /**
-     * Escape html
-     */
     private boolean escapeHtml;
 
-    /**
-     * The styled css id, should be one of
-     * {@link me.shouheng.easymark.EasyMarkViewer#DARK_STYLE_CSS} and
-     * {@link me.shouheng.easymark.EasyMarkViewer#LIGHT_STYLE_CSS}
-     */
-    private int styleCssId;
+    private String customCss;
 
-    /**
-     * The custom css content
-     */
-    private String customCssContent;
-
-    /**
-     * The result parse callback
-     */
     private OnGetResultListener onGetResultListener;
 
     public static class Builder {
         private Context context;
         private boolean useMathJax;
         private boolean escapeHtml;
-        private int styleCssId;
-        private String customCssContent;
+        private String customCss;
         private OnGetResultListener onGetResultListener;
 
         public Builder(Context context) {
@@ -130,13 +94,8 @@ public class MarkdownParser extends AsyncTask<String, String, String> {
             return this;
         }
 
-        public Builder setStyleCssId(int styleCssId) {
-            this.styleCssId = styleCssId;
-            return this;
-        }
-
-        public Builder setCustomCssContent(String customCssContent) {
-            this.customCssContent = customCssContent;
+        public Builder setCustomCss(String customCss) {
+            this.customCss = customCss;
             return this;
         }
 
@@ -154,11 +113,9 @@ public class MarkdownParser extends AsyncTask<String, String, String> {
         this.contextWeakRef = new WeakReference<>(builder.context);
         this.escapeHtml = builder.escapeHtml;
         this.useMathJax = builder.useMathJax;
-        this.styleCssId = builder.styleCssId;
-        this.customCssContent = builder.customCssContent;
+        this.customCss = builder.customCss;
         this.onGetResultListener = builder.onGetResultListener;
 
-        /* Handle the extensions */
         extensions = new LinkedList<>();
         extensions.addAll(Arrays.asList(
                 TablesExtension.create(),
@@ -170,12 +127,10 @@ public class MarkdownParser extends AsyncTask<String, String, String> {
                 SuperscriptExtension.create(),
                 FootnoteExtension.create(),
                 AttributesExtension.create()));
-        /* Add MathJax */
         if (useMathJax) {
             extensions.add(MathJaxExtension.create());
         }
 
-        /* Handle options */
         options = new MutableDataSet()
                 .set(FootnoteExtension.FOOTNOTE_REF_PREFIX, "[")
                 .set(FootnoteExtension.FOOTNOTE_REF_SUFFIX, "]")
@@ -185,12 +140,10 @@ public class MarkdownParser extends AsyncTask<String, String, String> {
 
     @Override
     protected String doInBackground(String...strings) {
-        /* Prepare the parser */
         Parser parser = Parser.builder(options)
                 .extensions(extensions)
                 .build();
 
-        /* Prepare the renderer */
         HtmlRenderer renderer = HtmlRenderer.builder(options)
                 .escapeHtml(escapeHtml)
                 .attributeProviderFactory(new IndependentAttributeProviderFactory() {
@@ -203,97 +156,84 @@ public class MarkdownParser extends AsyncTask<String, String, String> {
                 .extensions(extensions)
                 .build();
 
-        /* Get the css content */
-        String cssContent = getCssContent();
-
-        /* Handler MathJax before parse */
         String afterMJ = useMathJax ? handleMathJax(strings[0]) : strings[0];
         String noteHtml = renderer.render(parser.parse(afterMJ));
 
-        return getHtml(cssContent, noteHtml);
+        return getHtml(noteHtml);
     }
 
-    /**
-     * Get the final html used to display
-     *
-     * @param cssContent the styled css
-     * @param noteHtml the note html
-     * @return the full note html
-     */
-    private String getHtml(String cssContent, String noteHtml) {
-        return "<html>\n" +
+    private String getHtml(String noteHtml) {
+        return  "<html>\n" +
                 "<head>\n" +
-                "    <meta charset=\"utf-8\"/>\n" +
-                "    <style type=\"text/css\">\n" +
-                cssContent +
-                "    </style>\n" +
-                "    <script type=\"text/x-mathjax-config\">\n" +
-                "        MathJax.Hub.Config({\n" +
-                "            showProcessingMessages: false,\n" +
-                "            messageStyle: 'none',\n" +
-                "            showMathMenu: false,\n" +
-                "            tex2jax: {\n" +
-                "                inlineMath: [ ['$','$'], [\"\\\\(\",\"\\\\)\"] ],\n" +
-                "                displayMath: [ ['$$','$$'], [\"\\\\[\",\"\\\\]\"] ]\n" +
-                "            }\n" +
-                "        });\n" +
-                "    </script>\n" +
-                "    <script type=\"text/javascript\" async\n" +
-                "        src=\"https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML\">\n" +
-                "    </script>\n" +
-                "    <link rel=\"dns-prefetch\" href=\"//cdn.mathjax.org\" />\n" +
+                "  <meta charset=\"utf-8\"/>\n" +
+                "  <style type=\"text/css\">\n" +
+                getCssScript() +
+                "  </style>\n" +
+                getMathJax() +
+                getHighlightJs() +
                 "</head>\n" +
                 "<body>\n" +
-                "    <article id=\"content\" class=\"markdown-body\">\n" +
-                noteHtml +
-                "</article>\n" +
-                "<script>\n" +
-                "    var imgs = document.getElementsByTagName(\"img\");\n" +
-                "    var list = new Array();\n" +
-                "    for(var i = 0; i < imgs.length; i++){\n" +
-                "        list[i] = imgs[i].src;\n" +
-                "    }\n" +
-                "    for(var i = 0; i < imgs.length; i++){\n" +
-                "        imgs[i].onclick = function() {\n" +
-                "            jsCallback.showPhotosInGallery(this.src, list);\n" +
-                "        }\n" +
-                "    }\n" +
-                "</script>\n" +
+                "  <article id=\"content\">\n" + noteHtml + "</article>\n" +
+                getImageClickScript() +
                 "</body>\n" +
                 "</html>";
     }
 
-    /**
-     * Get the css of markdown content
-     *
-     * @return the css string
-     */
-    private String getCssContent() {
-        if (TextUtils.isEmpty(customCssContent)) {
+    private String getMathJax() {
+        return  "<script type=\"text/x-mathjax-config\">\n" +
+                " MathJax.Hub.Config({\n" +
+                " showProcessingMessages: false,\n" +
+                " messageStyle: 'none',\n" +
+                " showMathMenu: false,\n" +
+                " tex2jax: {\n" +
+                "   inlineMath: [ ['$','$'], [\"\\\\(\",\"\\\\)\"] ],\n" +
+                "   displayMath: [ ['$$','$$'], [\"\\\\[\",\"\\\\]\"] ]\n" +
+                "  }\n" +
+                " });\n" +
+                "</script>\n" +
+                "<script type=\"text/javascript\" async\n" +
+                "  src=\"https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML\">\n" +
+                "</script>\n" +
+                "<link rel=\"dns-prefetch\" href=\"//cdn.mathjax.org\" />\n";
+    }
+
+    private String getHighlightJs() {
+        return "<link href=\"https://cdn.bootcss.com/highlight.js/8.0/styles/monokai_sublime.min.css\" rel=\"stylesheet\">\n" +
+                "<script src=\"https://cdn.bootcss.com/highlight.js/8.0/highlight.min.js\"></script> \n" +
+                "<script >hljs.initHighlightingOnLoad();</script>\n";
+    }
+
+    private String getImageClickScript() {
+        return  "<script>\n" +
+                "  var imgs = document.getElementsByTagName(\"img\");\n" +
+                "  var list = new Array();\n" +
+                "  for(var i = 0; i < imgs.length; i++){\n" +
+                "     list[i] = imgs[i].src;\n" +
+                "  }\n" +
+                "  for(var i = 0; i < imgs.length; i++){\n" +
+                "     imgs[i].onclick = function() {\n" +
+                "       jsCallback.showPhotosInGallery(this.src, list);\n" +
+                "     }\n" +
+                "  }\n" +
+                "</script>\n";
+    }
+
+    private String getCssScript() {
+        if (TextUtils.isEmpty(customCss)) {
             if (contextWeakRef.get() != null) {
-                return Utils.readAssetsContent(contextWeakRef.get(), styleCssId == DARK_STYLE_CSS ?
-                        Constants.DARK_STYLE_CSS_ASSETS_NAME : Constants.LIGHT_STYLE_CSS_ASSETS_NAME);
+                return Utils.readAssetsContent(contextWeakRef.get(), Constants.DARK_STYLE_CSS_ASSETS_NAME);
             } else {
                 return "";
             }
         } else {
-            return customCssContent;
+            return customCss;
         }
     }
 
-    /**
-     * Handle MathJax, replace some chars in the MathJax expression for the performance
-     *
-     * @param content the content to handle
-     * @return the handled result
-     */
     private String handleMathJax(String content) {
-        if (mathJaxPattern == null) {
-            mathJaxPattern = Pattern.compile(Constants.MATH_JAX_REGEX_EXPRESSION);
-        }
-
         Matcher matcher = mathJaxPattern.matcher(content);
-        String matched, replaced;
+        String matched;
+        String replaced;
         while (matcher.find()) {
             matched = matcher.group();
             replaced = matched.replace("\\\\", "\\\\\\\\");
@@ -301,7 +241,6 @@ public class MarkdownParser extends AsyncTask<String, String, String> {
             replaced = replaced.replace("{", "\\{");
             content = content.replace(matched, replaced);
         }
-
         return content;
     }
 
@@ -367,9 +306,8 @@ public class MarkdownParser extends AsyncTask<String, String, String> {
                         final int index = url.indexOf('@');
 
                         if (index >= 0) {
-                            String[] dimensions = url.substring(index + 1, url.length()).split("\\|");
+                            String[] dimensions = url.substring(index + 1).split("\\|");
                             url = url.substring(0, index);
-
                             if (dimensions.length == 2) {
                                 String width = dimensions[0] == null || dimensions[0].equals("") ? "auto" : dimensions[0];
                                 String height = dimensions[1] == null || dimensions[1].equals("") ? "auto" : dimensions[1];
@@ -400,7 +338,16 @@ public class MarkdownParser extends AsyncTask<String, String, String> {
         }
     }
 
+    /**
+     * Callback when get parsed html
+     */
     public interface OnGetResultListener {
+
+        /**
+         * The parsed html
+         *
+         * @param html html content
+         */
         void onGetResult(String html);
     }
 }

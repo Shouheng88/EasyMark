@@ -21,7 +21,7 @@ import me.shouheng.easymark.Constants;
 public class Utils {
 
     /** The space char */
-    private final static char CHAR_SPACE = ' ';
+    private static final char CHAR_SPACE = ' ';
 
     /**
      * Change the dp value to pixel

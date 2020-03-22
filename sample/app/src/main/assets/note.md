@@ -125,22 +125,35 @@ You can use `>` to add quote text in your markdown:
 Add your language name behind the code bolck symbols can get the code style of the specified the languge:
 
 ```Java
-public static void main(String[]args){} //Java
+public static int cal(int a, int b) {
+    return a + b;
+}
+
+public static void main(String[] args) {
+    int a = 0;
+    int b = 0;
+    int c = cal(a, b);
+    System.out.println(c);
+} //Java
 ```
 
 ```c
+int main(int argc, char *argv[]) //C
 int main(int argc, char *argv[]) //C
 ```
 
 ```Bash
 echo "hello GitHub" #Bash
+echo "hello GitHub" #Bash
 ```
 
 ```javascript
 document.getElementById("myH1").innerHTML="Welcome to my Homepage"; //javascipt
+document.getElementById("myH1").innerHTML="Welcome to my Homepage"; //javascipt
 ```
 
 ```cpp
+string &operator+(const string& A,const string& B) //cpp
 string &operator+(const string& A,const string& B) //cpp
 ```
 

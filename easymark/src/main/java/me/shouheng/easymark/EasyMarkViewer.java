@@ -18,6 +18,8 @@ import me.shouheng.easymark.viewer.listener.OnUrlClickListener;
 import me.shouheng.easymark.viewer.parser.MarkdownParser;
 
 /**
+ * Markdown viewer
+ *
  * @author WngShhng (shouheng2015@gmail.com)
  * @version $Id: EasyMarkViewer, v 0.1 2018/11/23 18:56 shouh Exp$
  */
@@ -25,48 +27,15 @@ public class EasyMarkViewer extends FastScrollWebView {
 
     private static final String TAG = "EasyMarkViewer";
 
-    public final static int LIGHT_STYLE_CSS = 0;
-
-    public final static int DARK_STYLE_CSS = 1;
-
-    /**
-     * Whether use MathJax
-     */
     private boolean useMathJax;
-
-    /**
-     * Whether escape html
-     */
     private boolean escapeHtml;
 
-    /**
-     * The styled css id, should be one of {@link #DARK_STYLE_CSS} and {@link #LIGHT_STYLE_CSS}
-     */
-    private int styleCssId;
+    private String customCss;
 
-    /**
-     * The styled custom css content
-     */
-    private String customCssContent;
-
-    /**
-     * WebView client
-     */
     private MdWebViewClient webViewClient;
 
-    /**
-     * The callback for the markdown viewer lifecycle
-     */
     private LifecycleListener lifecycleListener;
-
-    /**
-     * The callback when the image clicked
-     */
     private OnUrlClickListener onUrlClickListener;
-
-    /**
-     * The callback when the image on the page is clicked
-     */
     private OnImageClickListener onImageClickListener;
 
     public EasyMarkViewer(Context context) {
@@ -100,57 +69,26 @@ public class EasyMarkViewer extends FastScrollWebView {
         this.setWebViewClient(webViewClient);
     }
 
-    /**
-     * Whether MathJax should be used
-     *
-     * @param useMathJax true to use MathJax
-     */
     @RequiresPermission(value = Manifest.permission.INTERNET)
     public void setUseMathJax(boolean useMathJax) {
         this.useMathJax = useMathJax;
     }
 
-    /**
-     * Set whether should escape html
-     *
-     * @param escapeHtml whether escape html
-     */
     public void setEscapeHtml(boolean escapeHtml) {
         this.escapeHtml = escapeHtml;
     }
 
-    /**
-     * Set the styled css id, should be one of {@link #LIGHT_STYLE_CSS} and {@link #DARK_STYLE_CSS}
-     * To use the styled css, you must call this method before trying to parse the content
-     *
-     * @param styleCssId the style css id
-     */
-    public void useStyleCss(int styleCssId) {
-        this.styleCssId = styleCssId;
+    public void setCustomCss(String customCss) {
+        this.customCss = customCss;
     }
 
-    /**
-     * Set the custom css content
-     *
-     * @param customCssContent the custom css content
-     */
-    public void setCustomCssContent(String customCssContent) {
-        this.customCssContent = customCssContent;
-    }
-
-    /**
-     * Process the markdown content
-     *
-     * @param content the markdown content
-     */
     public final void processMarkdown(String content) {
         if (lifecycleListener != null) {
             lifecycleListener.beforeProcessMarkdown(content);
         }
         new MarkdownParser.Builder(getContext())
                 .setEscapeHtml(escapeHtml)
-                .setStyleCssId(styleCssId)
-                .setCustomCssContent(customCssContent)
+                .setCustomCss(customCss)
                 .setOnGetResultListener(new MarkdownParser.OnGetResultListener() {
                     @Override
                     public void onGetResult(String html) {
@@ -164,11 +102,6 @@ public class EasyMarkViewer extends FastScrollWebView {
                 .build().execute(content);
     }
 
-    /**
-     * Set the url click event handler
-     *
-     * @param onUrlClickListener the url click listener
-     */
     public void setOnUrlClickListener(OnUrlClickListener onUrlClickListener) {
         this.onUrlClickListener = onUrlClickListener;
         if (webViewClient != null) {
@@ -176,11 +109,6 @@ public class EasyMarkViewer extends FastScrollWebView {
         }
     }
 
-    /**
-     * Set the life cycle listener
-     *
-     * @param lifecycleListener the life cycle listener
-     */
     public void setLifecycleListener(LifecycleListener lifecycleListener) {
         this.lifecycleListener = lifecycleListener;
         if (webViewClient != null) {
@@ -188,21 +116,10 @@ public class EasyMarkViewer extends FastScrollWebView {
         }
     }
 
-    /**
-     * Set the image click event listener
-     *
-     * @param onImageClickListener image click event listener
-     */
     public void setOnImageClickListener(OnImageClickListener onImageClickListener) {
         this.onImageClickListener = onImageClickListener;
     }
 
-    /**
-     * The js callback when the image is clicked
-     *
-     * @param url the url of clicked image
-     * @param urls urls of all images in the web page
-     */
     @JavascriptInterface
     public void showPhotosInGallery(String url, String[] urls) {
         Log.d(TAG, "showPhotosInGallery: " + url);
