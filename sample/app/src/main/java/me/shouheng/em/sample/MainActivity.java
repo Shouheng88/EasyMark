@@ -90,6 +90,10 @@ public class MainActivity extends CommonActivity<ActivityMainBinding, MainViewMo
                 }
             });
         }
+
+        // test string resources case sensitive
+//        Toast.makeText(this, R.string.app_name, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, R.string.App_name, Toast.LENGTH_SHORT).show();
     }
 
     /**
